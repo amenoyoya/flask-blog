@@ -9,6 +9,9 @@ Python + Flask によるシンプルなブログシステム
 ## Environment
 
 - OS: CentOS `7.6`
+- tmux(端末多重化ソフト): `2.7`
+    - uWSGIサーバーをバックグラウンド実行するために使う
+    - tmuxでなくても良い。使いやすいのを使えば良い
 - Python: `3.6.8`
     - Flask(WebFramework): `1.0.3`
         ```bash
@@ -37,9 +40,12 @@ $ git remote add origin https://github.com/amenoyoya/flask-blog.git
 $ git pull origin master
 
 # バックグラウンドでuwsgi実行
-$ uwsgi --ini uwsgi.ini &
+$ tmux new -s uwsgi # uwsgi仮想端末作成
+$ uwsgi --ini uwsgi.ini
 ## => 127.0.0.1:5000 でサーバー実行される
 ## => 別のポートで実行する場合は uwsgi.ini を編集する
+## => Ctrl + B -> D で仮想端末デタッチ
+## => uwsgi実行端末にアタッチするときは tmux a -t uwsgi
 
 # nginx の設定を追加する
 $ sudo cp nginx.conf /etc/nginx/conf.d/mysite.conf
