@@ -1,12 +1,12 @@
 # encoding: utf-8
-from libs.frasco import Frasco, Response
+from wsgiref.simple_server import make_server
 
-app = Frasco(__name__)
+def app(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'text/plain; charset=utf-8')]
+    start_response(status, headers)
+    return [b"Hello World"]
 
-# index: /
-@app.get('/')
-def index():
-    return Response.html('html/index.html')
-
-if __name__ == "__main__":
-    app.run()
+with make_server('', 8000, app) as httpd:
+    print("Serving on http://localhost:8000 ...")
+    httpd.serve_forever()

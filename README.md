@@ -1,73 +1,38 @@
-# Simple blog system by Flask
+# WSGI API Server
 
-## What's this?
-
-Python + Flask によるシンプルなブログシステム
-
-***
+Python の標準ライブラリで API サーバ実装
 
 ## Environment
 
-- OS: CentOS `7.6`
-- tmux(端末多重化ソフト): `2.7`
-    - uWSGIサーバーをバックグラウンド実行するために使う
-    - tmuxでなくても良い。使いやすいのを使えば良い
-- Python: `3.6.8`
-    - Flask(WebFramework): `1.0.3`
-        ```bash
-        $ pip install flask
-        ```
-    - uWSGI(ServerProtocol): `2.0.18`
-        ```bash
-        $ pip install uwsgi
-
-        # in Anaconda environment
-        $ conda install -c conda-forge uwsgi
-        ```
-- Nginx(WebServer): `1.16.0`
+- OS:
+    - Windows 10
+    - Ubuntu 18.04
+- Python: `3.6.10` (Anaconda `4.7.12`)
 
 ***
 
-## Nginx + uWSGI でWebサーバー公開
+## wsgiref 標準ライブラリによる http サーバ
+
+### server.py
+```python
+# encoding: utf-8
+from wsgiref.simple_server import make_server
+
+def app(environ, start_response):
+    status = '200 OK'
+    headers = [('Content-type', 'text/plain; charset=utf-8')]
+    start_response(status, headers)
+    return [b"Hello World"]
+
+with make_server('', 8000, app) as httpd:
+    print("Serving on http://localhost:8000 ...")
+    httpd.serve_forever()
+```
+
+以下のコマンドでサーバ実行
 
 ```bash
-# 作業ディレクトリに移動
-$ cd /path/to/mysite
+$ python server.py
 
-# このgitリポジトリをクローン
-$ git init
-$ git remote add origin https://github.com/amenoyoya/flask-blog.git
-$ git pull origin master
-
-# バックグラウンドでuwsgi実行
-$ tmux new -s uwsgi # uwsgi仮想端末作成
-$ uwsgi --ini uwsgi.ini
-## => 127.0.0.1:5000 でサーバー実行される
-## => 別のポートで実行する場合は uwsgi.ini を編集する
-## => Ctrl + B -> D で仮想端末デタッチ
-## => uwsgi実行端末にアタッチするときは tmux a -t uwsgi
-
-# nginx の設定を追加する
-$ sudo cp nginx.conf /etc/nginx/conf.d/mysite.conf
-
-# 必要に応じてドメイン名の編集をする
-$ sudo vim /etc/nginx/conf.d/mysite.conf
-~~~
-server {
-    server_name  mysite.example.com; # <= ドメイン名を設定する
-
-    proxy_set_header  Host  $host;
-    proxy_set_header  X-Real-IP  $remote_addr;
-    proxy_set_header  X-Forwarded-Host    $host;
-    proxy_set_header  X-Forwarded-Server  $host;
-    proxy_set_header  X-Forwarded-For  $proxy_add_x_forwarded_for;
-
-    location / {
-        proxy_pass    http://127.0.0.1:5000; # <= 転送先ポート（uwsgi実行ポート）を指定
-    }
-}
-~~~
-
-# nginx 再起動
-$ sudo systemctl restart nginx.service
+# => Serving on http://localhost:8000 ...
 ```
