@@ -13,7 +13,7 @@ services:
     environment:
       TZ: Asia/Tokyo
       # VIRTUAL_HOST設定（nginx-proxy）
-      VIRTUAL_HOST: nginx.local # http://nginx.local/ => docker://web:80
+      VIRTUAL_HOST: web.local # http://web.local/ => docker://web:80
       VIRTUAL_PORT: 80
       CERT_DEFAULT: default # ローカル開発時は自己証明書を使う
 
@@ -56,8 +56,6 @@ services:
       - ./docker/certs:/etc/nginx/certs:rw # ./docker/certs/ にSSL証明書を書き込めるように rw モードで共有
     depends_on:
       - nginx-proxy # nginx-proxyコンテナの後で起動
-    # restart: always # Dockerサービス起動時に自動起動
-    network_mode: bridge
     environment:
       NGINX_PROXY_CONTAINER: nginx-proxy
   

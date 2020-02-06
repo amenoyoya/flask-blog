@@ -56,7 +56,7 @@ $ python server.py
 |   |   |_ Dockerfile
 |   |   |_ requirements.txt # 必要なpythonライブラリを記述
 |   |
-|   |_ web/    # webコンテナ: https://nginx.local/ => docker://web:80
+|   |_ web/    # webコンテナ: https://web.local/ => docker://web:80
 |       |_ Dockerfile
 |       |_ nginx.conf # Nginx設定ファイル
 |                     ## docker://web:80/static/ => /var/www/app/static/
@@ -72,5 +72,5 @@ $ export UID && docker-compose build
 # コンテナ起動
 $ export UID && docker-compose up -d
 
-## => https://nginx.local/ でサーバ稼働
+## => https://web.local/ でサーバ稼働
 ```
