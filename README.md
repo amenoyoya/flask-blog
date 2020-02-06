@@ -48,6 +48,7 @@ $ python server.py
 |   |_ vassals/  # uWSGI設定ファイル格納ディレクトリ
 |   |   |_ server.ini # server.py 用の uWSGI 設定ファイル: docker://python:3000
 |   |
+|   |_ static/   # 静的ファイル配信用ディレクトリ
 |   |_ server.py # WSGIサーバ
 |
 |_ docker/ # Dockerコンテナ設定
@@ -63,6 +64,8 @@ $ python server.py
 |                     ## docker://web:80/ => docker://python:3000
 |_ docker-compose.yml
 ```
+
+![nginx-wsgi.png](./app/static/img/nginx-wsgi.png)
 
 ### コンテナ起動
 ```bash
