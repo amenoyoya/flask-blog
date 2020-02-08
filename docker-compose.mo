@@ -14,8 +14,20 @@ services:
     environment:
       TZ: Asia/Tokyo
       # VIRTUAL_HOST設定（nginx-proxy）
+{{^HOST}}
       CERT_NAME: default # ローカル開発時は自己証明書を使う
       VIRTUAL_HOST: web.local # http://web.local/ => docker://web:80
+{{/HOST}}
+{{#HOST}}
+      VIRTUAL_HOST: {{HOST}} # http://{{HOST}}/ => docker://web:80
+      LETSENCRYPT_HOST: {{HOST}}
+{{^EMAIL}}
+      LETSENCRYPT_EMAIL: admin@{{HOST}}
+{{/EMAIL}}
+{{#EMAIL}}
+      LETSENCRYPT_EMAIL: {{EMAIL}}
+{{/EMAIL}}
+{{/HOST}}
       VIRTUAL_PORT: 80
 
   # python app server
@@ -30,6 +42,7 @@ services:
     environment:
       TZ: Asia/Tokyo
 
+{{^NOPROXY}}
   # vhostプロキシサーバ
   nginx-proxy:
     image: jwilder/nginx-proxy
@@ -59,3 +72,4 @@ services:
       - nginx-proxy # nginx-proxyコンテナの後で起動
     environment:
       NGINX_PROXY_CONTAINER: nginx-proxy
+{{/NOPROXY}}
