@@ -102,9 +102,9 @@ $ node handledocker.js --host yourdomain.com --email yourmail@yourdomain.com +no
 ### Environment
 - Julia: 1.3.0
 
-### HTTPパッケージインストール
+### HTTP, Genieパッケージインストール
 ```bash
-$ julia -e 'using Pkg; Pkg.add("HTTP")'
+$ julia -e 'using Pkg; Pkg.add("HTTP"); Pkg.add("Genie")'
 ```
 
 ### server.jl
@@ -147,9 +147,43 @@ HTTP.listen("127.0.0.1", UInt16(8081)) do http::HTTP.Stream
 end
 ```
 
-### サーバ起動
 ```bash
+# サーバ起動
 $ julia server.jl
 
 # => Serving on http://127.0.0.1:8081
+```
+
+### genie.jl
+```julia
+"""
+Genie Web Framework を使ったサーバ
+"""
+
+using Genie
+import Genie.Router: route
+import Genie.Renderer.Json: json
+
+# route: / => {message: "Hello, Genie!"}
+route("/") do
+    (:message => "Hello, Genie!") |> json
+end
+
+# Genie設定: http://localhost:8080
+Genie.config.run_as_server = true
+Genie.config.server_port = 8080
+Genie.config.server_host = "0.0.0.0"
+# Nginxのように静的ファイルを配信: ./*
+Genie.config.server_handle_static_files = true
+Genie.config.server_document_root = "./"
+
+# Genie起動
+Genie.startup()
+```
+
+```bash
+# Genieサーバ起動
+$ julia genie.jl
+
+# => Serving on http://localhost:8080
 ```
