@@ -1,0 +1,4 @@
+export PATH="/usr/local/julia/bin:$PATH"
+. ~/.julia/conda/3/bin/activate
+
+/bin/bash

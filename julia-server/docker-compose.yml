@@ -9,13 +9,40 @@ services:
         # Docker実行ユーザIDをビルド時に使用
         UID: $UID
     volumes:
-      - ./app:/var/www/app # アプリケーション開発ディレクトリ
+      # アプリケーション開発ディレクトリ
+      - ./app/:/var/www/app/
+      # jupyterコンテナとの共有ディレクトリ
+      - julia-bin:/usr/local/julia/
+      - julia-home:/var/www/.julia/
     environment:
       TZ: Asia/Tokyo
       # VIRTUAL_HOST設定（nginx-proxy）
       CERT_NAME: default # ローカル開発時は自己証明書を使う
-      VIRTUAL_HOST: web.local # http://web.local/ => docker://web:8080
+      VIRTUAL_HOST: web.local # http://web.local/ => docker://julia:8080
       VIRTUAL_PORT: 8080
+  
+  # jupyter notebook by julia/pycall
+  jupyter:
+    build:
+      context: ./docker/jupyter # ./docker/jupyter/Dockerfile をビルド
+      args:
+        # Docker実行ユーザIDをビルド時に使用
+        UID: $UID
+    links:
+      - julia # juliaコンテナとリンク
+    volumes:
+      # JupyterNotebook起動ディレクトリ
+      - ./note/:/var/www/note/
+      # juliaコンテナとの共有ディレクトリ
+      - julia-bin:/usr/local/julia/
+      - julia-home:/var/www/.julia/
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
+      # VIRTUAL_HOST設定（nginx-proxy）
+      CERT_NAME: default # ローカル開発時は自己証明書を使う
+      VIRTUAL_HOST: jupyter.local # http://jupyter.local/ => docker://jupyter:8888
+      VIRTUAL_PORT: 8888
 
   # vhostプロキシサーバ
   nginx-proxy:
@@ -46,3 +73,10 @@ services:
       - nginx-proxy # nginx-proxyコンテナの後で起動
     environment:
       NGINX_PROXY_CONTAINER: nginx-proxy
+
+volumes:
+  # julia - jupyter コンテナ共有ボリューム
+  julia-bin:
+    driver: local
+  julia-home:
+    driver: local
