@@ -10,8 +10,7 @@ conda install jupyter
 julia -e 'using Pkg; Pkg.add("IJulia");'
 
 # ログインパスワード設定
-password='password'
-hash=`python -c "from notebook.auth import passwd; print(passwd('$password'))"`
+hash=`python -c "from notebook.auth import passwd; print(passwd('$JUPYTER_PASSWORD'))"`
 sed -i -e "s/^c\.NotebookApp\.password.*\$/c.NotebookApp.password = '$hash'/" ~/.jupyter/jupyter_notebook_config.py
 
 # run jupyter notebook

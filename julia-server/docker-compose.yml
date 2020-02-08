@@ -39,6 +39,8 @@ services:
     tty: true
     environment:
       TZ: Asia/Tokyo
+      # JupyterNotebookパスワード
+      JUPYTER_PASSWORD: jupyter
       # VIRTUAL_HOST設定（nginx-proxy）
       CERT_NAME: default # ローカル開発時は自己証明書を使う
       VIRTUAL_HOST: jupyter.local # http://jupyter.local/ => docker://jupyter:8888
