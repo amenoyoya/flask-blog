@@ -78,6 +78,23 @@ $ export UID && docker-compose up -d
 ## => https://web.local/ でサーバ稼働
 ```
 
+### 本番公開時
+```bash
+# -- user@server
+
+# masterブランチ pull
+$ pull origin master
+
+# docker-compose.yml の変更を無視
+$ git update-index --assume-unchanged docker-compose.yml
+
+# 本番公開用の docker-compose.yml 作成
+## --host <ドメイン名>: 公開ドメイン名
+## --email <メールアドレス>: Let's Encrypt 申請用メールアドレス（省略時: admin@<ドメイン名>）
+## +noproxy: 複数のDockerComposeで運用していて nginx-proxy, letsencrypt コンテナが別に定義されている場合に指定
+$ node handledocker.js --host yourdomain.com --email yourmail@yourdomain.com +noproxy
+```
+
 ***
 
 ## Julia による http サーバ
